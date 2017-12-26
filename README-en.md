@@ -1,4 +1,4 @@
-
+﻿
 **ByteTCC** is an implementation of Distributed Transaction Manager, based on Try-Confirm-Cancel (TCC) mechanism. 
 
 **ByteTCC** is comptible with JTA and could be seamlessly integrated with Spring and other Java containers.
@@ -7,11 +7,20 @@
 ## 1. Quick Start
 
 #### 1.1 Add maven depenency
+###### 1.1.1. Spring Cloud
 ```xml
 <dependency>
 	<groupId>org.bytesoft</groupId>
-	<artifactId>bytetcc-supports</artifactId>
-	<version>0.3.1</version>
+	<artifactId>bytetcc-supports-springcloud</artifactId>
+	<version>0.4.0</version>
+</dependency>
+```
+###### 1.1.2. dubbo
+```xml
+<dependency>
+	<groupId>org.bytesoft</groupId>
+	<artifactId>bytetcc-supports-dubbo</artifactId>
+	<version>0.4.0</version>
 </dependency>
 ```
 
@@ -76,7 +85,6 @@ public class AccountServiceCancel implements IAccountService {
 * [Sample](https://github.com/liuyangming/ByteTCC-sample)
 
 
-
 ## 3. Features
 * 1. support declarative transaction management
 * 2. support normal transaction, TCC transaction, compensating service transaction
@@ -88,6 +96,14 @@ public class AccountServiceCancel implements IAccountService {
 
 ## 4. History
 
+#### v0.4.x
+* Link：[https://github.com/liuyangming/ByteTCC/tree/0.4.x](https://github.com/liuyangming/ByteTCC/tree/0.4.x)
+* Doc：[https://github.com/liuyangming/ByteTCC/wiki](https://github.com/liuyangming/ByteTCC/wiki)
+
+#### v0.3.x
+* Link：[https://github.com/liuyangming/ByteTCC/tree/0.3.x](https://github.com/liuyangming/ByteTCC/tree/0.3.x)
+* Doc：[https://github.com/liuyangming/ByteTCC/wiki](https://github.com/liuyangming/ByteTCC/wiki)
+
 #### v0.2.0-alpha
 * Link：[http://code.taobao.org/p/openjtcc](http://code.taobao.org/p/openjtcc)
 * Doc：[http://code.taobao.org/p/openjtcc/wiki/index/](http://code.taobao.org/p/openjtcc/wiki/index/) 
@@ -96,8 +112,7 @@ public class AccountServiceCancel implements IAccountService {
 * Link：[http://code.google.com/p/bytetcc](http://code.google.com/p/bytetcc)
 
 #### v0.1
-* Link：[http://pan.baidu.com/s/1hq3ffxU
-](http://pan.baidu.com/s/1hq3ffxU)
+* Link：[http://pan.baidu.com/s/1hq3ffxU](http://pan.baidu.com/s/1hq3ffxU)
 
 
 ## 5. Contact Me
@@ -105,6 +120,6 @@ If you have any questions or comements regarding this project, please feel free 
 
 1. send mail to _[bytefox@126.com](bytefox@126.com)_
 ~OR~
-2. add Tecent QQ group 537445956
+2. add Tecent QQ group 537445956/606453172
 
 We will review all the suggestions and implement good ones in future release.

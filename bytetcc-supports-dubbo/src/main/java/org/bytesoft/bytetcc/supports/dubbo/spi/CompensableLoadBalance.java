@@ -62,15 +62,16 @@ public final class CompensableLoadBalance implements LoadBalance {
 			Invoker<T> invoker = invokers.get(i);
 			URL invokerUrl = invoker.getUrl();
 			String invokerHost = invokerUrl.getHost();
+			String invokerName = invokerUrl.getParameter("application");
 			int invokerPort = invokerUrl.getPort();
-			String invokerAddr = String.format("%s:%s", invokerHost, invokerPort);
+			String invokerAddr = String.format("%s:%s:%s", invokerHost, invokerName, invokerPort);
 			for (int j = 0; participantList != null && j < participantList.size(); j++) {
 				XAResourceArchive archive = participantList.get(j);
 				XAResourceDescriptor descriptor = archive.getDescriptor();
 				String identifier = descriptor.getIdentifier();
-				if (StringUtils.equals(invokerAddr, identifier)) {
+				if (StringUtils.equalsIgnoreCase(invokerAddr, identifier)) {
 					return invoker;
-				}
+				} // end-if (StringUtils.equalsIgnoreCase(invokerAddr, identifier))
 			}
 		}
 

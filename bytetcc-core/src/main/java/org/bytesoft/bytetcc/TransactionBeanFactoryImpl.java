@@ -23,6 +23,7 @@ import org.bytesoft.compensable.CompensableContext;
 import org.bytesoft.compensable.CompensableManager;
 import org.bytesoft.compensable.ContainerContext;
 import org.bytesoft.compensable.logging.CompensableLogger;
+import org.bytesoft.transaction.TransactionLock;
 import org.bytesoft.transaction.TransactionManager;
 import org.bytesoft.transaction.TransactionRecovery;
 import org.bytesoft.transaction.TransactionRepository;
@@ -50,7 +51,9 @@ public final class TransactionBeanFactoryImpl implements CompensableBeanFactory 
 	private XAResourceDeserializer resourceDeserializer;
 	private LocalResourceCleaner localResourceCleaner;
 	private CompensableContext compensableContext;
+	@javax.inject.Inject
 	private CompensableSynchronization compensableSynchronization;
+	private TransactionLock compensableLock;
 
 	public TransactionManager getTransactionManager() {
 		return transactionManager;
@@ -146,6 +149,14 @@ public final class TransactionBeanFactoryImpl implements CompensableBeanFactory 
 
 	public void setCompensableCoordinator(RemoteCoordinator compensableCoordinator) {
 		this.compensableCoordinator = compensableCoordinator;
+	}
+
+	public TransactionLock getCompensableLock() {
+		return compensableLock;
+	}
+
+	public void setCompensableLock(TransactionLock compensableLock) {
+		this.compensableLock = compensableLock;
 	}
 
 	public ContainerContext getContainerContext() {

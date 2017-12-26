@@ -105,7 +105,7 @@ public class CompensableConfigPostProcessor implements BeanFactoryPostProcessor 
 			throws BeansException {
 		BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
-		// <dubbo:service interface="org.bytesoft.bytejta.supports.wire.RemoteCoordinator" group="org.bytesoft.bytetcc"
+		// <dubbo:service interface="org.bytesoft.bytejta.supports.wire.RemoteCoordinator" group="org-bytesoft-bytetcc"
 		// ref="dispatcherCoordinator" filter="compensable" loadbalance="compensable" cluster="failfast" />
 		GenericBeanDefinition beanDef = new GenericBeanDefinition();
 		beanDef.setBeanClass(com.alibaba.dubbo.config.spring.ServiceBean.class);
@@ -116,9 +116,9 @@ public class CompensableConfigPostProcessor implements BeanFactoryPostProcessor 
 		mpv.addPropertyValue("cluster", "failfast");
 		mpv.addPropertyValue("loadbalance", "compensable");
 		mpv.addPropertyValue("filter", "compensable");
-		mpv.addPropertyValue("group", "org.bytesoft.bytetcc");
+		mpv.addPropertyValue("group", "org-bytesoft-bytetcc");
 		mpv.addPropertyValue("retries", "0");
-		mpv.addPropertyValue("timeout", "60000");
+		mpv.addPropertyValue("timeout", "6000");
 
 		String skeletonBeanId = String.format("skeleton@%s", RemoteCoordinator.class.getName());
 		registry.registerBeanDefinition(skeletonBeanId, beanDef);
@@ -129,18 +129,18 @@ public class CompensableConfigPostProcessor implements BeanFactoryPostProcessor 
 		BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
 		// <dubbo:reference id="yyy"
-		// interface="org.bytesoft.bytejta.supports.wire.RemoteCoordinator" group="org.bytesoft.bytetcc"
+		// interface="org.bytesoft.bytejta.supports.wire.RemoteCoordinator" group="org-bytesoft-bytetcc"
 		// timeout="3000" filter="compensable" loadbalance="compensable" cluster="failfast" />
 		GenericBeanDefinition beanDef = new GenericBeanDefinition();
 		beanDef.setBeanClass(com.alibaba.dubbo.config.spring.ReferenceBean.class);
 
 		MutablePropertyValues mpv = beanDef.getPropertyValues();
 		mpv.addPropertyValue("interface", RemoteCoordinator.class.getName());
-		mpv.addPropertyValue("timeout", "60000");
+		mpv.addPropertyValue("timeout", "6000");
 		mpv.addPropertyValue("cluster", "failfast");
 		mpv.addPropertyValue("loadbalance", "compensable");
 		mpv.addPropertyValue("filter", "compensable");
-		mpv.addPropertyValue("group", "org.bytesoft.bytetcc");
+		mpv.addPropertyValue("group", "org-bytesoft-bytetcc");
 		mpv.addPropertyValue("check", "false");
 		mpv.addPropertyValue("retries", "0");
 

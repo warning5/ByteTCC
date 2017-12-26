@@ -33,6 +33,7 @@ public class CompensableWork implements Work, CompensableBeanFactoryAware {
 
 	private boolean initialized = false;
 
+	@javax.inject.Inject
 	private CompensableBeanFactory beanFactory;
 
 	private void initializeIfNecessary() {
@@ -41,6 +42,7 @@ public class CompensableWork implements Work, CompensableBeanFactoryAware {
 			try {
 				compensableRecovery.startRecovery();
 				this.initialized = true;
+				compensableRecovery.timingRecover();
 			} catch (RuntimeException rex) {
 				logger.error("Error occurred while initializing the compensable work.", rex);
 			}
@@ -91,6 +93,14 @@ public class CompensableWork implements Work, CompensableBeanFactoryAware {
 
 	public long getDelayOfStoping() {
 		return delayOfStoping;
+	}
+
+	public long getRecoveryInterval() {
+		return recoveryInterval;
+	}
+
+	public void setRecoveryInterval(long recoveryInterval) {
+		this.recoveryInterval = recoveryInterval;
 	}
 
 	public void setDelayOfStoping(long delayOfStoping) {

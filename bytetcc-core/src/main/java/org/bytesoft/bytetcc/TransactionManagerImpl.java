@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class TransactionManagerImpl implements TransactionManager, CompensableBeanFactoryAware {
 	static final Logger logger = LoggerFactory.getLogger(TransactionManagerImpl.class);
 
+	@javax.inject.Inject
 	private CompensableBeanFactory beanFactory;
 
 	public void begin() throws NotSupportedException, SystemException {
@@ -131,6 +132,8 @@ public class TransactionManagerImpl implements TransactionManager, CompensableBe
 				compensableManager.rollback();
 			} else if (compensableContext.isCompensable() == false) {
 				transactionManager.rollback();
+			} else if (compensableContext.isCompensating()) {
+				compensableManager.rollback();
 			} else if (compensableContext.isCoordinator()) {
 				if (compensableContext.isPropagated()) {
 					compensableManager.rollback();

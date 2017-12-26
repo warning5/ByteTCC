@@ -47,6 +47,7 @@ public class SampleCompensableLogger extends VirtualLoggingSystemImpl
 		implements CompensableLogger, LoggingFlushable, CompensableBeanFactoryAware, CompensableEndpointAware {
 	static final Logger logger = LoggerFactory.getLogger(SampleCompensableLogger.class);
 
+	@javax.inject.Inject
 	private CompensableBeanFactory beanFactory;
 	private String endpoint;
 
@@ -235,7 +236,7 @@ public class SampleCompensableLogger extends VirtualLoggingSystemImpl
 
 	public File getDefaultDirectory() {
 		String address = StringUtils.trimToEmpty(this.endpoint);
-		File directory = new File(String.format("bytetcc/%s", address.replaceAll("\\:|\\.", "_")));
+		File directory = new File(String.format("bytetcc/%s", address.replaceAll("[^a-zA-Z_0-9]", "_")));
 		if (directory.exists() == false) {
 			try {
 				directory.mkdirs();
@@ -244,6 +245,14 @@ public class SampleCompensableLogger extends VirtualLoggingSystemImpl
 			}
 		}
 		return directory;
+	}
+
+	public int getMajorVersion() {
+		return 0;
+	}
+
+	public int getMinorVersion() {
+		return 2;
 	}
 
 	public String getLoggingFilePrefix() {

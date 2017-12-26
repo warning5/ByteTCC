@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  */
-package org.bytesoft.bytetcc.supports.rpc;
+package org.bytesoft.bytetcc.supports.dubbo;
 
 import org.bytesoft.compensable.CompensableBeanFactory;
 import org.bytesoft.compensable.CompensableManager;
@@ -24,8 +24,9 @@ import org.bytesoft.transaction.supports.rpc.TransactionInterceptor;
 import org.bytesoft.transaction.supports.rpc.TransactionRequest;
 import org.bytesoft.transaction.supports.rpc.TransactionResponse;
 
-public class TransactionInterceptorImpl implements TransactionInterceptor, CompensableBeanFactoryAware {
+public class CompensableInterceptorImpl implements TransactionInterceptor, CompensableBeanFactoryAware {
 
+	@javax.inject.Inject
 	private CompensableBeanFactory beanFactory;
 
 	// private TransactionInterceptor transactionInterceptor;

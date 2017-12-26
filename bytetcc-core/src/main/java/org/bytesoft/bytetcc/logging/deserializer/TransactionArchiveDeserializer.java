@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bytesoft.common.utils.ByteUtils;
 import org.bytesoft.common.utils.CommonUtils;
 import org.bytesoft.compensable.archive.CompensableArchive;
@@ -44,10 +45,12 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 		String propagatedBy = String.valueOf(archive.getPropagatedBy());
 		String[] address = propagatedBy.split("\\s*\\:\\s*");
 		byte[] hostByteArray = new byte[4];
+		byte[] nameByteArray = new byte[0];
 		byte[] portByteArray = new byte[2];
-		if (address.length == 2) {
+		if (address.length == 3) {
 			String hostStr = address[0];
-			String portStr = address[1];
+			String nameStr = address[1];
+			String portStr = address[2];
 
 			String[] hostArray = hostStr.split("\\s*\\.\\s*");
 			for (int i = 0; hostArray.length == 4 && i < hostArray.length; i++) {
@@ -55,16 +58,18 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 					int value = Integer.valueOf(hostArray[i]);
 					hostByteArray[i] = (byte) (value - 128);
 				} catch (RuntimeException rex) {
-					logger.debug(rex.getMessage(), rex);
+					logger.warn(rex.getMessage(), rex);
 				}
 			}
 
+			nameByteArray = StringUtils.isBlank(nameStr) ? new byte[0] : nameStr.getBytes();
+
 			try {
-				short port = Short.valueOf(portStr);
+				short port = (short) (Integer.valueOf(portStr) - 32768);
 				byte[] byteArray = ByteUtils.shortToByteArray(port);
 				System.arraycopy(byteArray, 0, portByteArray, 0, 2);
 			} catch (RuntimeException rex) {
-				logger.debug(rex.getMessage(), rex);
+				logger.warn(rex.getMessage(), rex);
 			}
 		}
 
@@ -85,12 +90,12 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 				System.arraycopy(sizeByteArray, 0, varByteArray, 0, sizeByteArray.length);
 				System.arraycopy(textByteArray, 0, varByteArray, sizeByteArray.length, textByteArray.length);
 			} catch (Exception ex) {
-				logger.error("Error occurred while serializing variable: {}", archive.getVariables());
+				logger.error("Error occurred while serializing variable: {}", archive.getVariables(), ex);
 				varByteArray = ByteUtils.shortToByteArray((short) 0);
 			}
 		}
 
-		int length = 6 + 4 + 2 + varByteArray.length + 2;
+		int length = 6 + 4 + 1 + nameByteArray.length + 2 + varByteArray.length + 2;
 		byte[][] nativeByteArray = new byte[nativeArchiveNumber][];
 		for (int i = 0; i < nativeArchiveNumber; i++) {
 			CompensableArchive compensableArchive = nativeArchiveList.get(i);
@@ -133,6 +138,11 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 
 		System.arraycopy(hostByteArray, 0, byteArray, position, 4);
 		position = position + 4;
+
+		byteArray[position++] = (byte) (nameByteArray.length - 128);
+		System.arraycopy(nameByteArray, 0, byteArray, position, nameByteArray.length);
+		position = position + nameByteArray.length;
+
 		System.arraycopy(portByteArray, 0, byteArray, position, 2);
 		position = position + 2;
 
@@ -192,8 +202,14 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 			}
 		}
 		String host = ber.toString();
-		int port = buffer.getShort();
-		archive.setPropagatedBy(String.format("%s:%s", host, port));
+
+		int sizeOfName = 128 + buffer.get();
+		byte[] nameByteArray = new byte[sizeOfName];
+		buffer.get(nameByteArray);
+		String name = new String(nameByteArray);
+
+		int port = 32768 + buffer.getShort();
+		archive.setPropagatedBy(String.format("%s:%s:%s", host, name, port));
 
 		short sizeOfVar = buffer.getShort();
 		if (sizeOfVar > 0) {
@@ -205,7 +221,7 @@ public class TransactionArchiveDeserializer extends org.bytesoft.bytejta.logging
 				variables = (Map<String, Serializable>) CommonUtils.deserializeObject(varByteArray);
 			} catch (Exception ex) {
 				variables = new HashMap<String, Serializable>();
-				logger.error("Error occurred while deserializing object: {}", varByteArray);
+				logger.error("Error occurred while deserializing object: {}", varByteArray, ex);
 			}
 
 			archive.setVariables(variables);

@@ -35,6 +35,7 @@ public class CompensableArchiveDeserializer implements ArchiveDeserializer, Comp
 	static final Logger logger = LoggerFactory.getLogger(CompensableArchiveDeserializer.class);
 	static final int LENGTH_OF_XID = XidFactory.GLOBAL_TRANSACTION_LENGTH + XidFactory.BRANCH_QUALIFIER_LENGTH;
 
+	@javax.inject.Inject
 	private CompensableBeanFactory beanFactory;
 
 	public byte[] serialize(TransactionXid xid, Object obj) {
@@ -46,9 +47,9 @@ public class CompensableArchiveDeserializer implements ArchiveDeserializer, Comp
 			byteArray = CommonUtils.serializeObject(compensable);
 		} catch (Exception ex) {
 			if (compensable == null) {
-				logger.error("Error occurred while serializing compensable: {}", compensable);
+				logger.error("Error occurred while serializing compensable: {}", compensable, ex);
 			} else {
-				logger.error("Error occurred while serializing args: {}", compensable.getArgs());
+				logger.error("Error occurred while serializing args: {}", compensable.getArgs(), ex);
 			}
 		}
 
@@ -192,7 +193,7 @@ public class CompensableArchiveDeserializer implements ArchiveDeserializer, Comp
 		try {
 			compensable = (CompensableInvocation) CommonUtils.deserializeObject(byteArray);
 		} catch (Exception ex) {
-			logger.error("Error occurred while deserializing object: {}", byteArray);
+			logger.error("Error occurred while deserializing object: {}", byteArray, ex);
 		}
 
 		XidFactory xidFactory = this.beanFactory.getTransactionXidFactory();
